@@ -1,6 +1,6 @@
 ---
 - name: Update and upgrade Proxmox PVE server
-  hosts: proxmox-pve
+  hosts: proxmox_pve
   become: yes
   tasks:
     - name: Update apt cache

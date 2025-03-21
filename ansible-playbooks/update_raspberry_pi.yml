@@ -1,6 +1,6 @@
 ---
 - name: Update and upgrade Raspberry Pi devices
-  hosts: raspberry-pi
+  hosts: raspberry_pi
   become: yes
   tasks:
     - name: Update apt cache
