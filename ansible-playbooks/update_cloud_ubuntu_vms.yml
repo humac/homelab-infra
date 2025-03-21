@@ -1,6 +1,6 @@
 ---
 - name: Update and upgrade Ubuntu VMs
-  hosts: cloud_ubuntu-vms
+  hosts: cloud_ubuntu_vms
   become: yes
   tasks:
     - name: Update apt cache
