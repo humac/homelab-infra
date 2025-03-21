@@ -1,0 +1,13 @@
+---
+- name: Update Pi-hole on designated servers
+  hosts: pihole_servers
+  become: yes
+  tasks:
+    - name: Update Pi-hole
+      shell: pihole -up
+      register: pihole_update
+      ignore_errors: yes
+
+    - name: Display Pi-hole update result
+      debug:
+        var: pihole_update.stdout
