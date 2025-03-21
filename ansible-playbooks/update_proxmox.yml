@@ -12,12 +12,22 @@
       apt:
         upgrade: dist
 
-    - name: Reboot the server if required
+    - name: Install needrestart
+      apt:
+        name: needrestart
+        state: present
+
+    - name: Check if a reboot is required
+      command: needrestart -r l
+      register: needrestart_output
+      failed_when: false
+      changed_when: "'REBOOT' in needrestart_output.stdout"
+
+    - name: Reboot the system if required
       reboot:
-        msg: "Reboot initiated by Ansible"
+        msg: "Reboot initiated by Ansible due to updates"
         connect_timeout: 5
         reboot_timeout: 300
         pre_reboot_delay: 0
         post_reboot_delay: 30
-        test_command: uptime
-
+      when: "'REBOOT' in needrestart_output.stdout"
