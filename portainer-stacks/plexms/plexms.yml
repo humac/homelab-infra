@@ -1,0 +1,60 @@
+services:
+  app:
+    image: lscr.io/linuxserver/plex:latest
+    container_name: plex
+    network_mode: host
+    ports:
+      - "32400:32400/tcp"
+      - "3005:3005/tcp"
+      - "8324:8324/tcp"
+      - "32469:32469/tcp"
+      - "1900:1900/udp"
+      - "32410:32410/udp"
+      - "32412:32412/udp"
+      - "32413:32413/udp"
+      - "32414:32414/udp"
+    environment:
+      - TZ=America/Toronto
+      - VERSION=docker
+      - HOSTNAME="plex.hueflix.rocks"
+      - PUID=2000
+      - PGID=2000
+      - UMASK=022
+      - ADVERTISE_IP="http://10.0.30.7:32400/"
+    devices:
+      # This line is crucial for Intel iGPU passthrough
+      - /dev/dri:/dev/dri
+    volumes: 
+      - /mnt/apps_ssd/apps/plexms/config/:/config
+      - /mnt/apps_ssd/apps/plexms/transcode/:/transcode
+      - nfs-media:/media
+
+    # Healthcheck so the container self-heals if Plex wedges
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:32400/identity"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+  
+    restart: unless-stopped
+
+    # Prevent log growth from causing “No space left on device”
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "3"
+
+    # Headroom for big libraries / scanners
+    ulimits:
+      nofile: 262144
+      nproc: 8192
+
+volumes:
+  nfs-media:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=10.20.30.27,rw,soft,nfsvers=4
+      device: ":/Media"
