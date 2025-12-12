@@ -1,0 +1,20 @@
+services:
+  app:
+    image: ghcr.io/linuxserver/tautulli:latest
+    environment:
+      - PGID=2000
+      - PUID=2000
+      - TZ=America/Toronto
+      - DOCKER_MODS=ghcr.io/gilbn/theme.park:tautulli
+      - TP_THEME=plex
+    volumes:
+      - /mnt/apps_ssd/apps/tautulli:/config
+    networks:
+      - media-network
+    ports:
+      - 8181:8181
+    restart: unless-stopped
+
+networks:
+  media-network:
+    external: true
