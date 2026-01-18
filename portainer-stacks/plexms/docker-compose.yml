@@ -26,7 +26,7 @@ services:
     volumes: 
       - /mnt/apps_ssd/apps/plexms/config/:/config
       - /mnt/apps_ssd/apps/plexms/transcode/:/transcode
-      - nfs-media:/media
+      - /mnt/tank/media/:/media
 
     # Healthcheck so the container self-heals if Plex wedges
     healthcheck:
